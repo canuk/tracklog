@@ -4,6 +4,8 @@ class LogsController < ApplicationController
   before_filter :authenticate
   before_filter :find_log_and_check_permission, :except => [:index, :tagged, :new, :create]
 
+  require 'pp'
+
   def index
     @selected_year = params[:year] ? params[:year].to_i : Time.now.year
 
@@ -41,6 +43,30 @@ class LogsController < ApplicationController
   end
 
   def show
+    departure_lat = @log.tracks.first.trackpoints.first.latitude
+    departure_lng = @log.tracks.first.trackpoints.first.longitude
+    # departure_result = Nokogiri.XML(open("http://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=stations&requestType=retrieve&format=xml&radialDistance=5;#{departure_lng},#{departure_lat}").read)
+    # @departure_airport = departure_result.search('station_id').text + ' (' + departure_result.search('site').text + ')'
+    # departure_result = Nokogiri.XML(open("https://api.flightstats.com/flex/airports/rest/v1/xml/withinRadius/#{departure_lng}/#{departure_lat}/5?appId=058b0ced&appKey=5476fe6ce864d93d2623004c2a9daaab").read)
+    # @departure_airport = departure_result.search('faa').text + ' (' + departure_result.search('name').text + ')'
+
+    arrival_lat = @log.tracks.first.trackpoints.last.latitude
+    arrival_lng = @log.tracks.first.trackpoints.last.longitude
+    # arrival_result = Nokogiri.XML(open("https://api.flightstats.com/flex/airports/rest/v1/xml/withinRadius/#{arrival_lng}/#{arrival_lat}/5?appId=058b0ced&appKey=5476fe6ce864d93d2623004c2a9daaab").read)
+    # @arrival_airport = arrival_result.search('faa').text + ' (' + arrival_result.search('name').text + ')'
+
+    fusion_table_url = "https://www.googleapis.com/fusiontables/v1/query"
+    fusion_table_id = "1ZyiBtjwgNxApITFl3VpOC4f-3N4h8cxG_e0l6PEU"
+    api_key = "AIzaSyAm9yWCV7JPCTHCJut8whOjARd7pwROFDQ"
+
+    @departure_json = JSON.parse(open("#{fusion_table_url}?sql=SELECT%20*%20FROM%20#{fusion_table_id}%20ORDER%20BY%20ST_DISTANCE(latitude_deg,%20LATLNG(#{departure_lat},#{departure_lng}))%20LIMIT%201&key=#{api_key}").read)
+    @departure_airport = "#{@departure_json["rows"][0][1]} (#{@departure_json["rows"][0][3]})"
+
+    @arrival_json = JSON.parse(open("#{fusion_table_url}?sql=SELECT%20*%20FROM%20#{fusion_table_id}%20ORDER%20BY%20ST_DISTANCE(latitude_deg,%20LATLNG(#{arrival_lat},#{arrival_lng}))%20LIMIT%201&key=#{api_key}").read)
+    @arrival_airport = "#{@arrival_json["rows"][0][1]} (#{@arrival_json["rows"][0][3]})"
+
+
+
     respond_to do |format|
       format.html
 

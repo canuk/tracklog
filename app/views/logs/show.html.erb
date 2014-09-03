@@ -52,13 +52,22 @@
     </dl>
 
     <dl>
-      <dt>Ascent</dt>
+      <dt>Departure Airport</dt>
+      <dd><%= @departure_airport %></dd>
+      <dt>Arrival Airport</dt>
+      <dd><%= @arrival_airport %></dd>
+    </dl>
+
+
+
+    <dl>
+      <dt>Climbing</dt>
       <dd><%=format_elevation @log.ascent %></dd>
-      <dt>Descent</dt>
+      <dt>Descending</dt>
       <dd><%=format_elevation @log.descent %></dd>
-      <dt>Min. Elevation</dt>
+      <dt>Min. Altitude</dt>
       <dd><%=format_elevation @log.min_elevation %></dd>
-      <dt>Max. Elevation</dt>
+      <dt>Max. Altitude</dt>
       <dd><%=format_elevation @log.max_elevation %></dd>
     </dl>
 
@@ -134,7 +143,7 @@
     </div>
   <%- end -%>
 
-  <h2>Elevation Profile</h2>
+  <h2>Altitude Profile</h2>
   <div id="track-distance-elevation-plot"></div>
 </div>
 
