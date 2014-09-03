@@ -37,7 +37,7 @@ Tracklog.MapPopupOverlay.prototype.setPosition = function(latlng, segment, dista
 
   this.div.find(".time").text(segment.start.time);
 
-  if (this.distance_units == "imperial") {
+  if (this.distanceUnits == "imperial") {
     this.div.find(".distance").html(distance.to_miles().round(2) + "&nbsp;miles");
     this.div.find(".speed").html(segment.speed.to_miles_per_hour().round(2) + "&nbsp;mph");
     this.div.find(".elevation").html(segment.start.elevation.to_feet().round(0) + "&nbsp;ft");
